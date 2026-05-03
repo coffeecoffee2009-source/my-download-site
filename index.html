@@ -37,45 +37,46 @@
 
 <h1>工具下載與資料查詢</h1>
 
-<h2>📥 檔案下載</h2>
-<a class="button"
-   href="https://drive.google.com/uc?id=你的檔案ID&export=download"
->
-下載工具檔案
-</a>
-
-<h2>📊 即時資料（來自 Google 試算表）</h2>
-<table id="dataTable"></table>
+<h2>📁 檔案下載清單</h2>
+<table id="downloadTable" border="1" cellpadding="8"></table>
 
 <script>
-const url =
-  "https://docs.google.com/spreadsheets/d/你的試算表ID/gviz/tq?tqx=out:json";
+const sheetId = "請貼上你的試算表ID";
+const sheetUrl =
+  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-fetch(url)
+fetch(sheetUrl)
   .then(res => res.text())
   .then(text => {
     const json = JSON.parse(text.substring(47).slice(0, -2));
-    const table = document.getElementById("dataTable");
+    const table = document.getElementById("downloadTable");
 
-    // Header
-    let header = "<tr>";
-    json.table.cols.forEach(col => {
-      header += `<th>${col.label}</th>`;
-    });
-    header += "</tr>";
-    table.innerHTML += header;
+    // 表頭
+    table.innerHTML = `
+      <tr>
+        <th>名稱</th>
+        <th>說明</th>
+        <th>下載</th>
+        <th>類型</th>
+      </tr>
+    `;
 
-    // Rows
+    // 資料列
     json.table.rows.forEach(row => {
-      let tr = "<tr>";
-      row.c.forEach(cell => {
-        tr += `<td>${cell ? cell.v : ""}</td>`;
-      });
-      tr += "</tr>";
-      table.innerHTML += tr;
+      const name = row.c[0]?.v || "";
+      const desc = row.c[1]?.v || "";
+      const url  = row.c[2]?.v || "#";
+      const type = row.c[3]?.v || "";
+
+      table.innerHTML += `
+        <tr>
+          <td>${name}</td>
+          <td>${desc}</td>
+          <td>
+            <a href="${url}" target="_d>
+          <td>${type}</td>
+        </tr>
+      `;
     });
   });
 </script>
-
-</body>
-</html>
