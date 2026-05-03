@@ -3,124 +3,95 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>檔案下載與資料查詢</title>
+  <title>工具下載與資料查詢</title>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", "Noto Sans TC", Arial, sans-serif;
       margin: 40px;
     }
+
+    h1, h2 {
+      color: #1a237e;
+    }
+
     table {
       border-collapse: collapse;
+      margin-top: 12px;
       width: 100%;
-      margin-top: 20px;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 8px;
-      text-align: left;
     }
+
     th {
-      background: #f2f2f2;
+      background: #e3f2fd;
     }
-    a.button {
-      display: inline-block;
-      margin: 10px 0;
-      padding: 10px 15px;
-      background: #1976d2;
-      color: white;
+
+    a {
+      color: #1976d2;
       text-decoration: none;
-      border-radius: 4px;
     }
   </style>
 </head>
+
 <body>
 
-<h1>工具下載與資料查詢</h1>
+  <h1>工具下載與資料查詢</h1>
 
-<h2>📁 檔案下載清單</h2>
-<table id="downloadTable" border="1" cellpadding="8"></table>
+  <h2>📁 檔案下載清單</h2>
 
-<script>
-const sheetId = <h2>📁 檔案下載清單</h2>
-<table id="downloadTable" border="1" cellpadding="8"></table>
+  <table id="downloadTable"></table>
 
-<script>
-const sheetId = "請在這裡貼上你的試算表ID";
-const sheetUrl =
-  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+  <script>
+    // ✅ 在這裡貼上你的 Google 試算表 ID
+    const sheetId = "請在這裡貼上你的試算表ID";
 
-fetch(sheetUrl)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const table = document.getElementById("downloadTable");
+    const sheetUrl =
+      `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-    // 表頭
-    table.innerHTML = `
-      <tr>
-        <th>名稱</th>
-        <th>說明</th>
-        <th>下載</th>
-        <th>類型</th>
-      </tr>
-    `;
+    fetch(sheetUrl)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const table = document.getElementById("downloadTable");
 
-    // 資料列
-    json.table.rows.forEach(row => {
-      const name = row.c[0]?.v || "";
-      const desc = row.c[1]?.v || "";
-      const url  = row.c[2]?.v || "#";
-      const type = row.c[3]?.v || "";
+        // 表頭
+        table.innerHTML = `
+          <tr>
+            <th>名稱</th>
+            <th>說明</th>
+            <th>下載</th>
+            <th>類型</th>
+          </tr>
+        `;
 
-      table.innerHTML += `
-        <tr>
-          <td>${name}</td>
-          <td>${desc}</td>
-          <td><a href="${url}" target="_blank>${type}</td>
-        </tr>
-      `;
-    });
-  })
-  .catch(err => {
-    document.getElementById("downloadTable").innerHTML =
-      "<tr><td>資料讀取失敗，請確認試算表權限</td></tr>";
-  });
-</script>
-const sheetUrl =
-  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+        // 資料列
+        json.table.rows.forEach(row => {
+          const name = row.c[0]?.v || "";
+          const desc = row.c[1]?.v || "";
+          const url  = row.c[2]?.v || "#";
+          const type = row.c[3]?.v || "";
 
-fetch(sheetUrl)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const table = document.getElementById("downloadTable");
+          table.innerHTML += `
+            <tr>
+              <td>${name}</td>
+              <td>${desc}</td>
+              <td>
+                <a href="${url             </td>
+              <td>${type}</td>
+            </tr>
+          `;
+        });
+      })
+      .catch(() => {
+        document.getElementById("downloadTable").innerHTML =
+          "<tr><td>❌ 無法讀取資料，請確認試算表 ID 與權限</td></tr>";
+      });
+  </script>
 
-    // 表頭
-    table.innerHTML = `
-      <tr>
-        <th>名稱</th>
-        <th>說明</th>
-        <th>下載</th>
-        <th>類型</th>
-      </tr>
-    `;
-
-    // 資料列
-    json.table.rows.forEach(row => {
-      const name = row.c[0]?.v || "";
-      const desc = row.c[1]?.v || "";
-      const url  = row.c[2]?.v || "#";
-      const type = row.c[3]?.v || "";
-
-      table.innerHTML += `
-        <tr>
-          <td>${name}</td>
-          <td>${desc}</td>
-          <td>
-            <a href="${url}" target="_d>
-          <td>${type}</td>
-        </tr>
-      `;
-    });
-  });
-</script>
+</body>
+</html>
