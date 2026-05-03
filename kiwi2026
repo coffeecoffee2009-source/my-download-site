@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>檔案下載與資料查詢</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #f2f2f2;
+    }
+    a.button {
+      display: inline-block;
+      margin: 10px 0;
+      padding: 10px 15px;
+      background: #1976d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>工具下載與資料查詢</h1>
+
+<h2>📥 檔案下載</h2>
+<a class="button"
+   href="https://drive.google.com/uc?id=你的檔案ID&export=download"
+>
+下載工具檔案
+</a>
+
+<h2>📊 即時資料（來自 Google 試算表）</h2>
+<table id="dataTable"></table>
+
+<script>
+const url =
+  "https://docs.google.com/spreadsheets/d/你的試算表ID/gviz/tq?tqx=out:json";
+
+fetch(url)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const table = document.getElementById("dataTable");
+
+    // Header
+    let header = "<tr>";
+    json.table.cols.forEach(col => {
+      header += `<th>${col.label}</th>`;
+    });
+    header += "</tr>";
+    table.innerHTML += header;
+
+    // Rows
+    json.table.rows.forEach(row => {
+      let tr = "<tr>";
+      row.c.forEach(cell => {
+        tr += `<td>${cell ? cell.v : ""}</td>`;
+      });
+      tr += "</tr>";
+      table.innerHTML += tr;
+    });
+  });
+</script>
+
+</body>
+</html>
