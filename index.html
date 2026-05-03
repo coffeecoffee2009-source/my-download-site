@@ -41,7 +41,51 @@
 <table id="downloadTable" border="1" cellpadding="8"></table>
 
 <script>
-const sheetId = "1AbCDEFghiJKLmnopQrsTUV123456789";
+const sheetId = <h2>📁 檔案下載清單</h2>
+<table id="downloadTable" border="1" cellpadding="8"></table>
+
+<script>
+const sheetId = "請在這裡貼上你的試算表ID";
+const sheetUrl =
+  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+fetch(sheetUrl)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const table = document.getElementById("downloadTable");
+
+    // 表頭
+    table.innerHTML = `
+      <tr>
+        <th>名稱</th>
+        <th>說明</th>
+        <th>下載</th>
+        <th>類型</th>
+      </tr>
+    `;
+
+    // 資料列
+    json.table.rows.forEach(row => {
+      const name = row.c[0]?.v || "";
+      const desc = row.c[1]?.v || "";
+      const url  = row.c[2]?.v || "#";
+      const type = row.c[3]?.v || "";
+
+      table.innerHTML += `
+        <tr>
+          <td>${name}</td>
+          <td>${desc}</td>
+          <td><a href="${url}" target="_blank>${type}</td>
+        </tr>
+      `;
+    });
+  })
+  .catch(err => {
+    document.getElementById("downloadTable").innerHTML =
+      "<tr><td>資料讀取失敗，請確認試算表權限</td></tr>";
+  });
+</script>
 const sheetUrl =
   `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
