@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>工具下載與資料查詢</title>
+  <title>工具資料查詢</title>
 
   <style>
     body {
@@ -14,65 +13,44 @@
 
     h1 {
       color: #0d47a1;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      color: #1a237e;
-      margin-top: 30px;
     }
 
     .search-box {
-      margin: 10px 0 16px 0;
+      margin: 20px 0;
     }
 
     .search-box input {
-      padding: 8px 10px;
-      width: 320px;
-      max-width: 100%;
+      padding: 8px;
+      width: 300px;
       font-size: 14px;
     }
 
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 10px;
     }
 
     th, td {
       border: 1px solid #ccc;
-      padding: 8px 10px;
+      padding: 8px;
       text-align: left;
-      vertical-align: top;
     }
 
     th {
-      background-color: #e3f2fd;
-    }
-
-    a {
-      color: #1976d2;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    a:hover {
-      text-decoration: underline;
+      background: #e3f2fd;
     }
 
     .count {
-      margin-top: 6px;
-      color: #555;
+      margin: 8px 0;
       font-size: 13px;
+      color: #555;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>工具下載與資料查詢</h1>
-
-  <h2>📁 檔案下載清單</h2>
+  <h1>工具資料查詢</h1>
 
   <div class="search-box">
     <input
@@ -83,11 +61,10 @@
     <div class="count" id="resultCount"></div>
   </div>
 
-  <table id="downloadTable"></table>
+  <table id="dataTable"></table>
 
   <script>
-    // 🔴 請把下面這一行，換成你自己的 Google 試算表 ID
-    // 範例：1AbCdEfGhIjKlMnOpQrStUvWxYz
+    // ✅ 換成你的 Google 試算表 ID
     const sheetId = "請在這裡貼上你的試算表ID";
 
     const sheetUrl =
@@ -101,21 +78,16 @@
         const json = JSON.parse(text.substring(47).slice(0, -2));
         allRows = json.table.rows || [];
         renderTable(allRows);
-      })
-      .catch(() => {
-        document.getElementById("downloadTable").innerHTML =
-          "<tr><td>❌ 無法讀取資料，請確認試算表 ID 與權限</td></tr>";
       });
 
     function renderTable(rows) {
-      const table = document.getElementById("downloadTable");
+      const table = document.getElementById("dataTable");
       const count = document.getElementById("resultCount");
 
       table.innerHTML = `
         <tr>
           <th>名稱</th>
           <th>說明</th>
-          <th>下載</th>
           <th>類型</th>
         </tr>
       `;
@@ -123,14 +95,12 @@
       rows.forEach(row => {
         const name = row.c[0]?.v || "";
         const desc = row.c[1]?.v || "";
-        const url  = row.c[2]?.v || "#";
-        const type = row.c[3]?.v || "";
+        const type = row.c[2]?.v || "";
 
         table.innerHTML += `
           <tr>
             <td>${name}</td>
             <td>${desc}</td>
-            <td><a href="${urltd>
             <td>${type}</td>
           </tr>
         `;
@@ -139,25 +109,7 @@
       count.textContent = `顯示 ${rows.length} 筆資料`;
     }
 
-    // 🔍 搜尋功能
     document.getElementById("searchInput").addEventListener("input", function () {
       const keyword = this.value.toLowerCase();
 
       const filtered = allRows.filter(row => {
-        const name = row.c[0]?.v?.toLowerCase() || "";
-        const desc = row.c[1]?.v?.toLowerCase() || "";
-        const type = row.c[3]?.v?.toLowerCase() || "";
-
-        return (
-          name.includes(keyword) ||
-          desc.includes(keyword) ||
-          type.includes(keyword)
-        );
-      });
-
-      renderTable(filtered);
-    });
-  </script>
-
-</body>
-</html>
